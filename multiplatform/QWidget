@@ -1,0 +1,12 @@
+/// this header file enables compilation on qt4.8 and qt5
+#ifndef MP_QWIDGET
+#define MP_QWIDGET
+
+#include <QtGlobal>
+#if QT_VERSION >= 0x050000
+#include <QWidget>
+#else
+#include <QtGui/QWidget>
+#endif
+
+#endif // MP_QWIDGET

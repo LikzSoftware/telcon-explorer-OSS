@@ -1,0 +1,125 @@
+DESCRIPTION OF THE TOOL FOR EXPLORING TELECONNECTIONS
+Author: Anatoliy Antonov
+Last updated: July 6, 2014
+
+TABLE OF CONTENTS
+	I. COMPILATION
+	II. LAUNCHING THE TOOL
+	III. DATA FORMAT
+	IV. INCLUDED ANALYSIS
+	V. INTERACTIVE VIEWS
+	VI. PREFERENCES
+
+
+I. COMPILATION
+
+The tool has been developed and tested under Ubuntu Linux.
+
+Required libraries (Ubuntu package names):
+NetCDF (libnetcdf-dev)
+GSL, GNU Scientific Library (libgsl0-dev)
+Qt 4.8 (libqt4-dev libqt4-core libqt4-gui libqt4-opengl)
+
+Compilation:
+/usr/bin/qmake CONFIG+=debug NCCorrelation.pro
+make
+
+
+II. LAUNCHING THE TOOL
+
+./NCCorrelation [ -P | --precomputeOnly ] -v <variable name> -l <level> fileName.nc
+or ./NCCorrelation [ --precompute ] --var <variable name> --level <level> fileName.nc
+
+-P --precompute --precomputeOnly Perform the necessary precomputations (required for a new dataset).
+
+-v --var Specify the variable name
+
+-l --level Specify the pressure level 
+
+Examples: 
+	./NCCorrelation -P -v geopoth -l 50000 echam-yearmean.nc
+		will first precompute and then open the exploration window for the dataset
+		
+	./NCCorrelation -v hgt -l 500 ncep-wintermean.nc
+		will open the exploration window, relying on the files with precomputation results	
+
+
+III. DATA FORMAT
+
+Input file format
+The tool supports datasets in NetCDF format.
+The analyzed variable is a 4-dimensional variable with indices (time, level, lat, lon), or 3D variable (time, lat, lon)
+Coordinate variables should have names:
+lon - for longitude,
+lat - for latitude,
+lev (alternatively: level) - for pressure level,
+time for time.
+
+
+IV. INCLUDED ANALYSIS
+
+Performed analysis includes:
+- computing of Pearson correlation coefficient in each pair of time series;
+- computing autocorrelation for each time series;
+- multidimensional scaling representation of all pairwise correlation relationships;
+- defining teleconnectivity value for each point;
+- building chain of sequentially strongly negatively correlated points;
+- finding regions in the teleconnectivity map;
+- determining statistical significance for the teleconnectivity values.
+
+
+V. INTERACTIVE VIEWS
+
+The results of the analysis are explored in an interactive visual setting with four coordinated views.
+(1) Top-left view: correlation map.
+(2) Top-right view: projection view.
+(3) Bottom-left view: teleconnectivity map.
+(4) Bottom-right view: list of teleconnectivity links.
+
+(1) and (2) present view on the correlations in the data. The main color represents correlations of time series at each point to a chosen reference point (by default - one with the highest teleconnectivity value). This representation is overlaid by the correlation chain. 
+
+View (1) presents a map layout (equirectangular or polar map). 
+
+The layout of the view (2) is generated with a projection algorithm, and corresponds to global correlation relationships between time series: highly positively correlated points are grouped closer together, and highly negatively correlated points are pushed further apart from each other.
+
+View (3) presents teleconnectivity value in color in the map layout. This presentation is overlaid with the links connecting different regions.
+
+View (4) provides a textual representation for the links shown in the view (3). If the start of a link is selected as a reference point, the row for this link will be highlighed in the list.
+
+
+Interactions with the views:
+
+View (1), (2), (3): pointing mouse at a point would show the points coordinates and correlation(1,2)/teleconnectivity(3) value, left click will choose this point as a reference point (change main colors accordingly and build new correlation chain for views 1,2).
+
+View (1), (3): left click while holding shift will select the region for the point, left click while holding ctrl will select the region around the point and all connected regions, right click will reset the current selection.
+
+View (2): moving the mouse while holding the left button will select the points inside the drawn contour, right click will resent the current selection.
+
+View (4): left click on the row selects the start of the link as the reference point (updating views 1 and 2 accordingly).
+
+
+Threshold slider:
+the slider allows to adjust the teleconnectivity threshold used for the region search.
+
+
+VI. PREFERENCES
+
+Preferences pane:
+Transfer function editors:
+points represent control points with specified colors. There are three modes to define color between control points: 
+	continuous - interpolate continuously between control points
+	banded midpoint - in a section between two control points, lower half has color of lower control point, upper half has color of upper control point
+	banded sides - a section between two control points has the color of the lower control points.
+
+left click & dragging: moving control points (the control points at the top and at the bottom cannot be moved)
+shift + left click on a control point: change the color
+right click on a control point: remove control point (except the top and the bottom)
+right click between control points: create a new control point (inherits the current color value at the chosen point)
+
+There are a few predefined (continuous) transfer functions that could be used as-is.
+
+Preference pane also allows to change colors of points and lines in the views. 
+
+Preferences are loaded and stored in a file preferences.txt in the working directory from where the tool is started.
+
+

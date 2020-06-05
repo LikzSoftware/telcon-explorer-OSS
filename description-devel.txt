@@ -1,0 +1,33 @@
+DEVELOPER'S DESCRIPTION OF THE TOOL FOR EXPLORING TELECONNECTIONS
+Author: Anatoliy Antonov
+Last updated: November 21, 2014
+
+PURPOSE
+This tool is aimed at interactive analysis of teleconnections. 
+
+PROJECT STRUCTURE
+Current structure of the project contains the following packages
+
+[root] - main() functions for normal execution and test runs, some general definitions and helpers; project files; description files for users and for developers;
+
+colorizer - classes and widgets for using and modifying transfer functions (translation of data values to color values); *this package is reused in other VCGL applications;
+
+exploration - model and controller (= main widget) for the interactive part of the application;
+
+exploration/maps - classes and widgets responsible for the map views of the interactive part of the application;
+
+exploration/projection - classes and widgets responsible for the projection view of the interactive part of the application;
+
+init - classes used for the startup of the application (resolving file names, reading data, as well as organizing the startup sequence);
+
+[meta] - supplementary data files required for the application (transfer function presets, land contours);
+
+preferences - classes and widgets for using, modifying and storing/loading the application preferences;
+
+process - classes implementing the correlation computation, region extraction, storing/loading precomputed data;
+
+projection - classes responsible for the computation of the projection; *this package is reused in other VCGL applications
+
+
+CLASS STRUCTURE
+The main entities and their relationships are in the file [NCCorrelation].dia in the root package.
