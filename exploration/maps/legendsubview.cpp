@@ -46,6 +46,18 @@ LegendSubview::drawLegendBar(const IColorizer* pColorizer, const float pixelRati
 			glVertex2f(barArea.right+1.5, barArea.bottom+i/pixelRatio+0.5);
 		}
 	glEnd();
+
+	glColor3f(0.0, 0.0, 0.0);
+	//qglColor(Qt::black);
+	glLineWidth(1.0);
+	glBegin(GL_LINE_LOOP);
+		glVertex2f(barArea.left+0.5, barArea.bottom-0.5);
+		glVertex2f(barArea.left+0.5, barArea.bottom+ nLines/pixelRatio + 0.5);
+
+		glVertex2f(barArea.right+1.5, barArea.bottom+ nLines/pixelRatio + 0.5);
+
+		glVertex2f(barArea.right+1.5, barArea.bottom-0.5);
+	glEnd();
 }
 
 void

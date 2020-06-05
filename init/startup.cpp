@@ -220,6 +220,10 @@ int Startup::runShow(char* fileName, char* variableName, char* levelValue, bool 
 	std::cerr << "Using land contours file " << pathContours << std::endl;
 
 	{ // development version
+
+		std::cout << "Loading data..." << std::endl;
+		clock_t start_load = clock();
+
 		ExplorationModel* pem = new ExplorationModelImpl();
 
 		VCGL::NCFileDataStorage* pncf = new VCGL::NCFileDataStorage(strFN.c_str());
@@ -236,10 +240,15 @@ int Startup::runShow(char* fileName, char* variableName, char* levelValue, bool 
 		pem->computeStatisticalSignificanceMask(0.99); // prepare statistical significance
 		pem->setThreshold(0.0); // perform region search
 
+
 		ExplorationWidget ew;
 		ew.move(200,200);
 		ew.setModel(pem);
 		ew.show();
+
+		clock_t end_load = clock();
+		float seconds_load = ((float)(end_load - start_load)) / CLOCKS_PER_SEC;
+		std::cout << "Loading completed in " << seconds_load << " seconds" << std::endl;
 
 		retVal = a.exec();
 	}

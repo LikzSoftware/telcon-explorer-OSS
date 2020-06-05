@@ -68,9 +68,9 @@ ProjectionWidget::paintGL() {
 
 	emit updateProjectionRequest(pProjectionView);
 
-	if (selectingRegion) {
+//	if (selectingRegion) {
 		drawSelectionHull();
-	}
+//	}
 }
 
 void
@@ -109,6 +109,7 @@ ProjectionWidget::mouseReleaseEvent(QMouseEvent *event) {
 	if (event->button() == Qt::RightButton) {
 		{
 		// reset region selection
+			hull.hull.clear();
 			std::vector<std::vector<QPointF>> projectionData;
 			emit getProjectionDataRequest(projectionData);
 
@@ -306,8 +307,12 @@ ProjectionWidget::findClosestPointCoordinates(QPoint modelPos, QPointF& outCoord
 
 void
 ProjectionWidget::drawSelectionHull() {
-	QColor lineColor = Qt::blue;
-	qglColor(lineColor);
+	if (hull.hull.size() == 0) {
+		return;
+	}
+	//QColor lineColor = Qt::blue;
+	//qglColor(lineColor);
+	glColor3f(0,0.7,0);
 
 	glBegin(GL_LINE_STRIP);
 		const std::vector<QPoint>& selHull = hull.hull;

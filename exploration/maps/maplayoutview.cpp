@@ -114,8 +114,8 @@ void MapLayoutView::paintEvent(QPaintEvent* /*event*/) {
 	 glClear(GL_COLOR_BUFFER_BIT);
 	 glLoadIdentity();
 
-	rasterize(layoutData.mapArea, Qt::white);
-	rasterize(layoutData.legendArea, Qt::white);
+//	rasterize(layoutData.mapArea, Qt::white);
+//	rasterize(layoutData.legendArea, Qt::white);
 
 	emit updateMapRequest(pMap);
 	emit updateLegendRequest(pLegend);
