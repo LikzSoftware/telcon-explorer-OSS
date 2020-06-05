@@ -1,0 +1,89 @@
+telcon-explorer open source preparation
+TODO list
+
+DOCUMENTATION
+* Find out the licences for the used software
+	NetCDF
+	GSL		GPL
+	GSL-CBLAS
+	Qt		(L)GPLv3
+	M?
+	CppUnitLite?
+* Write basic repository files (README, AUTHORS, COPYRIGHT, etc)
+	which mention the used components and their licences
+* Generate Doxygen output, verify presence/absence of commentary
+* Update .dia UML diagram
+* AUTHORS
+	Anatoly Antonov -- tool development, refactoring, integration, packaging.
+	Vladimir Molchanov -- Transfer Function Widgets, Selection in
+projection
+	Petar Dobrev / T.V.Long -- Config File Parser
+	Alex... -- Sammon mapping implementation (LSP projection)
+
+	Monica Ionita, Mihai Dima -- scientific collaboration
+	Gerrit Lohman -- scientific supervision for geoscientific topics
+	Lars Linsen -- scientific supervision for visualization topics
+CppUnitLite:
+	Original version from Michael Feathers
+		http://www.objectmentor.com/resources/downloads.html
+		http://www.objectmentor.com/resources/bin/CppUnitLite.zip
+	Wiki page: http://c2.com/cgi/wiki?CppUnitLite
+		(--> http://wiki.c2.com/?CppUnitLite)
+	Modified version by Anatoly Antonov
+
+
+BUGS TO FIX
+* Fix bugs / improve behavior with file locations
+	- should not crash on non-existent file
+
+* Remove lines around map subview and legend subview
+% Projection view is black on startup until resize
+	-> paint is not called neither on construction, nor show, nor update
+	-> workaround implemented to resize ±1 px 
+* Default transfer functions -- use ones from the paper
+* Region Explorer -- change the dialog title
+* Enable / disable points and lines in the views
+
+
+IMPROVEMENTS
+* Switch precomputation files to binary to speed up writes/reads
+* Estimate feasibility of a progressbar for projection
+* See if it is possible to analyze required dependencies (e.g. libnetcdf-devel / netcdf.h) from qmake
+
+To test:
+* Support of Qt v4 and latest Qt v5
+* Compilation and execution on Linux and Windows
+Tested:
+* Compilation and execution on Mac and Qt5.6 -> OK
+
+POSSIBLE IMPROVEMENTS:
+* Create packages structure, e.g.
+	VCGL::Geo,
+	VCGL::Color,
+	VCGL::Projection,
+	VCGL::Configuration,
+	VCGL::Persistence
+* package Colorizer
+	- Rename package Colorizer to Colormap?
+	- Merge RGBA support by Gordan R?
+* Remove/rename color_schemes.txt from colorizer package
+* Screenshot to file for widgets
+* Screenshot to file for the ensemble of widgets
+	AKA "export current state to an image"
+* Add preference for the lat/lon showing: file default vs N/S, E/W
+* Region Explorer -- add a "console view" with steps tracing, e.g. 
+	step 0: thresholding at TC=0.6
+	step 1: found first seed: (20N, 180E)
+	...
+	step 10: no seeds found, stopping search
+	found k regions, l links
+	... 
+* Disable mouse transform of the projection widget
+	(possibly make configurable via subclassing)
+* Support selecting full grid / Northern Hemisphere / arbitrary grid region
+	for computations and exploration
+* Custom associations between original data file and precomputation results
+	a) precompute all, load Northern Hemisphere
+	b) recognize single variable / single level files
+		AND point all launch types to the same precomputation files
+		(with/without variable name, with/without level)

@@ -1,0 +1,13 @@
+/// this header file enables compilation on qt4.8 and qt5
+#ifndef QAPPLICATION
+#define QAPPLICATION
+
+#include <QtGlobal>
+#if QT_VERSION >= 0x050000
+#include <QApplication>
+#else
+#include <QtGui/QApplication>
+#endif
+
+#endif // QAPPLICATION
+
