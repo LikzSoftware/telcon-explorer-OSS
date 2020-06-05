@@ -38,10 +38,6 @@ ProjectionWidget::~ProjectionWidget() {
 	}
 }
 
-void ProjectionWidget::render() {
-	update();
-}
-
 void
 ProjectionWidget::initializeGL() {
 }
@@ -190,7 +186,7 @@ ProjectionWidget::mouseMoveEvent(QMouseEvent *event)
 	if (selectingRegion)
 	{ // begin region selection
 		hull.addPoint(currPos);
-		render();
+		update();
 	} // end region selection
 	else {
 		if (event->button() == Qt::NoButton) {
@@ -263,7 +259,7 @@ ProjectionWidget::wheelEvent(QWheelEvent *event) {
 
 		pProjectionView->zoom(addScale, pt);
 	} // end zoom
-	render();
+	update();
 }
 
 void ProjectionWidget::setupViewport(int width, int height) {

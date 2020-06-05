@@ -10,7 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include "init/cfgfileparser.h"
+#include "storage/cfgfileparser.h"
 #include <cassert>
 
 

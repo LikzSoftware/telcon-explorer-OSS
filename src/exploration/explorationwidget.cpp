@@ -109,9 +109,14 @@ ExplorationWidget::setModel(VCGL::ExplorationModel* pModel) {
 void ExplorationWidget::updateAllViews() {
 	ui.mapCorrelation->render();
 	ui.mapTeleconnectivity->render();
-	ui.wProjection->render();
+	ui.wProjection->update();
 	updateLinksList();
 	updateThresholdView();
+}
+
+void ExplorationWidget::update() {
+	QWidget::update();
+	updateAllViews();
 }
 
 void ExplorationWidget::getGrid(VCGL::MapGrid& grid) {

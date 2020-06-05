@@ -8,8 +8,8 @@
 #ifndef FAKEPREFERENCEPANEVIEW_H_
 #define FAKEPREFERENCEPANEVIEW_H_
 
-#include "preferencepanelogic.h"
-#include "preferences.h"
+#include "preferences/preferencepanelogic.h"
+#include "preferences/preferences.h"
 
 namespace Testing {
 	class FakePreferencePaneView: public VCGL::PreferencePaneView {

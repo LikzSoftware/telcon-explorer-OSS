@@ -50,6 +50,8 @@ public:
     /// Request the controller to update all of its views
     void updateAllViews();
 
+	void update();
+
 protected slots:
 	/// Get data coordinate reference grid
 	void getGrid(VCGL::MapGrid& grid);

@@ -22,7 +22,6 @@ class ProjectionWidget: public QGLWidget {
 public:
 	ProjectionWidget(QWidget* parent);
 	virtual ~ProjectionWidget();
-	void render();
 
 signals:
 	void getGridRequest(VCGL::MapGrid& grid);

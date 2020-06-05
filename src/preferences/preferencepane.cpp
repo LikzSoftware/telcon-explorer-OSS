@@ -4,8 +4,8 @@
 
 #include <QColorDialog>
 
-#include "init/pathresolver.h"
-#include "init/filesystem.h"
+#include "storage/pathresolver.h"
+#include "storage/filesystem.h"
 #include <string>
 
 #include "exploration/maps/maptype.h"

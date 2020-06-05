@@ -9,9 +9,9 @@
 #include "cppunitextras.h"
 
 //#include <QRect>
-#include "mrect.h"
-#include "mapgrid.h"
-#include "polarmapsubview.h"
+#include "exploration/maps/mrect.h"
+#include "exploration/maps/mapgrid.h"
+#include "exploration/maps/polarmapsubview.h"
 
 namespace Testing {
 

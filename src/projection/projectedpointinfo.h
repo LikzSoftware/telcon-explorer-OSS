@@ -9,6 +9,7 @@
 
 #include "tspoint.h"
 #include "typedefs.h"
+#include <iostream>
 
 namespace VCGL {
 
@@ -20,6 +21,7 @@ struct ProjectedPointInfo {
 	ProjectedPointInfo();
 	double getX() const;
 	double getY() const;
+	bool operator== (const ProjectedPointInfo& other) const;
 };
 
 /*
@@ -41,6 +43,15 @@ ProjectedPointInfo::getX() const {
 inline double
 ProjectedPointInfo::getY() const {
 	return pt.getY();
+}
+
+inline bool ProjectedPointInfo::operator== (const ProjectedPointInfo& other) const {
+	return (getX() == other.getX() && getY() == other.getY() && name == other.name);
+}
+
+inline std::ostream& operator<< (std::ostream& os, const ProjectedPointInfo& ppi) {
+	os << '(' << ppi.getX() << ',' << ppi.getY() << ')' << " name:\'" << ppi.name << '\'';
+	return os;
 }
 
 } // namespace VCGL

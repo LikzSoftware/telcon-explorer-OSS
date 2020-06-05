@@ -9,8 +9,8 @@
 
 #include "cppunitextras.h"
 #include <QRect>
-#include "mrect.h"
-#include "layout.h"
+#include "exploration/maps/mrect.h"
+#include "exploration/maps/layout.h"
 
 namespace Testing {
 

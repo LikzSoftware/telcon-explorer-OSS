@@ -8,8 +8,8 @@
 #include "CppUnitLite/TestHarness.h"
 #include "cppunitextras.h"
 
-#include "tcstorage.h"
-#include "datastorage.h"
+#include "storage/tcstorage.h"
+#include "storage/datastorage.h"
 #include "typedefs.h"
 
 namespace Testing {
@@ -28,6 +28,10 @@ namespace Testing {
 
 class TestingDataStorage: public VCGL::DataStorage {
 public:
+	virtual std::size_t getNTime() override {
+		//TODO: implement
+		return 0;
+	}
 	virtual std::size_t getNLon() override {
 		return testLons.size();
 	}

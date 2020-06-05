@@ -103,41 +103,6 @@ void computeCorrelations(
    std::cout << "min=" << minval << ", max=" << maxval << std::endl;
 }
 
-
-
-void storeCorrelationsTriangle(const std::vector< std::vector<float> >& correlationMatrix, const char* corrFileNameOUT) {
-   const int npoints = correlationMatrix.size();
-
-   std::ofstream fout(corrFileNameOUT);
-   fout << npoints << std::endl;
-
-   for (int x = 0; x<npoints; x++) {
-	   for (int y = 0; y<x; y++) {
-		   fout << correlationMatrix[x][y] << ' ';
-	  }
-	  fout << std::endl;
-   }
-   fout.close();
-}
-
-void readCorrelationTriangle(const char* fileName, std::vector< std::vector<float> > & correlationMatrix) {
-   int npoints = 0;
-   std::ifstream fin(fileName);
-   fin >> npoints;
-
-   correlationMatrix.clear();
-   correlationMatrix.resize(npoints, std::vector<float>(npoints) );
-
-   for (int x = 0; x<npoints; x++) {
-	   for (int y = 0; y<x; y++) {
-		   fin >> correlationMatrix[x][y];
-		   correlationMatrix[y][x] = correlationMatrix[x][y];
-	  }
-	   correlationMatrix[x][x] = 1.0;
-   }
-   fin.close();
-}
-
 void computeAutocorrelations(const std::vector< std::vector< std::vector<float> > >& data,
 				std::vector<float> & autocorrelations,
 				std::vector< std::vector<bool> >& validityMask) {
@@ -214,32 +179,6 @@ void computeAutocorrelations(const std::vector< std::vector< std::vector<float> 
    std::cout << "min=" << minval << ", max=" << maxval << std::endl;
 }
 
-void storeAutocorrelations(const std::vector<float>& autocorrelations, const std::string& autocorrFileNameOUT) {
-	 const int npoints = autocorrelations.size();
-
-	   std::ofstream fout(autocorrFileNameOUT);
-	   fout << npoints << std::endl;
-
-	   for (int x = 0; x<npoints; x++) {
-		  fout << autocorrelations[x] << ' ';
-	   }
-	   fout.close();
-}
-
-void readAutocorrelations(const std::string& fileName, std::vector<float>& autocorrelations) {
-	int npoints = 0;
-	std::ifstream fin(fileName);
-	fin >> npoints;
-
-	autocorrelations.clear();
-	autocorrelations.resize(npoints);
-
-	for (int x = 0; x<npoints; x++) {
-	   fin >> autocorrelations[x];
-	}
-	fin.close();
-}
-
 void
 projectCorrelationMatrix(const std::vector< std::vector<float> >& correlations,
 		int nx, int ny, std::vector<VCGL::ProjectedPointInfo>& output) {
@@ -287,43 +226,3 @@ projectDMAT(
 		output[i].pt = projectedPoints[i];
 	}
 }
-
-void storeProjectionResults(const char* fileName, std::vector<VCGL::ProjectedPointInfo>& results) {
-	std::ofstream fout(fileName);
-
-	unsigned numPoints = results.size();
-
-	fout << numPoints << std::endl;
-	for (unsigned j=0; j<numPoints; j++) {
-		fout << results[j].pt.getX() << ' ' << results[j].pt.getY() << std::endl;
-	}
-   fout.close();
-}
-
-void loadProjectionLonLat(const char* fnProjection, int nlon, int nlat, std::vector<VCGL::ProjectedPointInfo>& projection) {
-	projection.clear();
-
-	std::ifstream fin(fnProjection);
-	int numPoints = 0;
-	fin >> numPoints;
-
-	assert(numPoints == nlon*nlat);
-
-	projection.resize(numPoints);
-
-	for (int j=0; j<numPoints; j++) {
-		double x;
-		double y;
-		fin >> x >> y;
-		projection[j].pt = LSP::TSPoint(x,y);
-
-		int lon = j % nlon;
-		int lat = j / nlon;
-		std::stringstream str;
-		str << '(' << lon << ',' << lat << ')';
-		projection[j].name = str.str();
-	}
-   fin.close();
-}
-
-

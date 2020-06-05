@@ -6,8 +6,8 @@
  */
 
 #include "CppUnitLite/TestHarness.h"
-#include "preferencepanelogic.h"
-#include "preferences.h"
+#include "preferences/preferencepanelogic.h"
+#include "preferences/preferences.h"
 
 #include <vector>
 #include "colorizer/transferfunctionobject.h"

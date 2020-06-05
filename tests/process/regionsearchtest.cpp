@@ -9,9 +9,9 @@
 #include "CppUnitLite/TestHarness.h"
 #include "cppunitextras.h"
 
-#include "regionsearch.h"
-#include "link.h"
-#include "regionconnectivity.h"
+#include "process/regionsearch.h"
+#include "process/link.h"
+#include "process/regionconnectivity.h"
 
 #include <vector>
 #include <queue>
@@ -188,19 +188,20 @@ TEST(growRegion, PrecomputeRegionSearch)
 TEST(findMaximalUnmarkedPoint, PrecomputeRegionSearch)
 {
 	std::vector< std::vector<float> > tc(1);
-	tc[0] = {0.6, 0.8, 0.7, 0.2};
+	tc[0] = {0.6, 0.8, 0.7, 0.8, 0.2};
 
 //	std::vector< std::vector<QPoint> > tcindices(1);
 //	tcindices[0] = { QPoint(4,0), QPoint(4,0), QPoint(4,0), QPoint(2,0), QPoint(2,0) };
 
 	std::vector< std::vector<int> > regionMap(1);
-	regionMap[0] = { -1, 0, -1, -1 };
+	regionMap[0] = { -1, 0, -1, -1, -1 };
 
 	TestingRegionSearch trs;
 	QPoint pt = trs.findMaximalUnmarkedPoint(regionMap, tc);
 
-	CHECK_EQUAL(QPoint(2,0), pt);
+	CHECK_EQUAL(QPoint(3,0), pt);
 }
+ 
 
 TEST(seed, PrecomputeRegionSearch) {
 	std::vector< std::vector<float> > tc(1);

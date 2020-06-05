@@ -5,11 +5,11 @@
  * @brief Tests for the logic of the transfer editor widget
  */
 
-#include "transferfunctioneditor.h"
+#include "colorizer/transferfunctioneditor.h"
 
 #include "CppUnitLite/TestHarness.h"
-#include "transferfunctioneditorwidget.h"
-#include "transferfunctionobject.h"
+#include "colorizer/transferfunctioneditorwidget.h"
+#include "colorizer/transferfunctionobject.h"
 
 namespace Testing {
 

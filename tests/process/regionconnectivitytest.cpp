@@ -9,8 +9,8 @@
 #include "CppUnitLite/TestHarness.h"
 #include "cppunitextras.h"
 
-#include "regionconnectivity.h"
-#include "link.h"
+#include "process/regionconnectivity.h"
+#include "process/link.h"
 //#include "regionsearch.h"
 //#include <vector>
 //#include <queue>

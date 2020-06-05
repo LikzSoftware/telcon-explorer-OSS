@@ -23,7 +23,7 @@ public:
 private:
 	bool checkDir(const std::string& dirName, const std::string& inFileName,
 			std::string& testPath);
-	std::string getMetaDir() const;
+	std::string getGlobalDataDir() const;
 
 	const FileSystem& fs;
 	static std::string appDirName;

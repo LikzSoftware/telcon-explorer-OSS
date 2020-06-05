@@ -1,25 +1,33 @@
 
 #include <iostream>
+#include <cstdint>
 #include <cstring>
 #include <cassert>
 
-#include "init/startup.h"
-#include "init/pathresolver.h"
-#include "init/filesystem.h"
+#include "startup.h"
+#include "storage/pathresolver.h"
+#include "storage/filesystem.h"
 #include <getopt.h>
 
-//TODO: make binary flags of this state
-enum RunState {
-	PRECOMPUTE_ONLY,
-	PRECOMPUTE_AND_SHOW,
-	SHOW_ONLY,
-	UI_TEST,
-	REGIONS_EXPLORER,
-	ERROR
+enum RunState: uint8_t {
+	UNKNOWN = 0,
+	DEFAULT = 0x01,			// SHOW by default
+	PRECOMPUTE = 0x02,		// 0b00000010
+	REGION_EXPLORER = 0x20,	// 0b00100000
+	UI_TEST = 0x40,			// 0b01000000
+	ERROR = 0x80			// 0b10000000
 };
 
 void showUsage() {
-	std::cerr << "Usage: NCCorrelation [-N | --northOnly] [-P | --precomputeOnly] [-v variableName] [-l level] fileName.nc" << std::endl;
+	std::cerr << "Usage: telcon-explorer [action] [flags] -v variableName -l level fileName.nc" << std::endl;
+	std::cerr << "By default (when no action is specified), ";
+	std::cerr << "application assumes the precompute is performed and loads the main window." << std::endl;
+	std::cerr << "Flags:" << std::endl;
+	std::cerr << "\t-N (--northOnly) use only northern hemisphere portion of the data file (unstable)" << std::endl;
+	std::cerr << "Actions (cannot be combined):" << std::endl;
+	std::cerr << "\t-P               precompute" << std::endl;
+	std::cerr << "\t-u               load region explorer" << std::endl;
+	std::cerr << "\t-r               load ui test" << std::endl;
 }
 
 int main(int argc, char *argv[])
@@ -31,16 +39,15 @@ int main(int argc, char *argv[])
 		std::cerr << i << ": " << argv[i] << std::endl;
 	}
 
-	// parse arguments (TODO: see getopt)
+	// parse arguments (see getopt)
 	// precompute/test/show(default) flags, with/without lags, variable name, variable level, other parameters
 
 	char* varName = 0;
 	char* levelValue = 0;
-	char* thresholdValue = 0;
 	char* fileName = 0;
 	bool northOnly = false; // work only with northern hemisphere
 
-	enum RunState state = SHOW_ONLY;
+	enum RunState state = DEFAULT;
 	int returnValue = 0;
 
 	// define the mode of execution (precompute or show, with ot without lags, or test, or combination)
@@ -48,20 +55,20 @@ int main(int argc, char *argv[])
 	int c = 0;
 	do {
 		int optionIndex = 0;
-		// ATTENTION: change PCONLY_INDEX accordingly to the options array
 		static struct option longOptions[] = {
 				{"northOnly", no_argument, 0, 'N'},
 				{"precompute", no_argument, 0, 'P'},
-				{"precomputeOnly", no_argument, 0, 0},
 				{"var", required_argument, 0, 'v'},
 				{"level", required_argument, 0, 'l'},
+				{"help", no_argument, 0, 'h'},
 				{0, 0, 0, 0}
 		};
-		const int PCONLY_INDEX = 2;
-		assert(0 == strcmp(longOptions[2].name, "precomputeOnly" ));
 
 		c = getopt_long(argc, argv, "NPv:l:t:ur", longOptions, &optionIndex);
 		switch (c) {
+		case 'h':
+			showUsage();
+			return 1;
 		case -1:
 			std::cerr << "end of options list" << std::endl;
 			break;
@@ -73,21 +80,19 @@ int main(int argc, char *argv[])
 			}
 			std::cerr << std::endl;
 
-			if (optionIndex == PCONLY_INDEX) {
-				state = PRECOMPUTE_ONLY;
-			}
-			break;
 		case 'N':
 			std::cerr << "option northOnly" << std::endl;
 			northOnly = true;
 			break;
 		case 'P':
 			std::cerr << "option precompute" << std::endl;
-			if (state == SHOW_ONLY) {
-				state = PRECOMPUTE_AND_SHOW;
+			// accept the action only when in default state, otherwise fail
+			if (state == DEFAULT) {
+				state = PRECOMPUTE;
 			}
 			else {
-				std::cerr << "ignoring precompute option because of previous options" << std::endl;
+				std::cerr << "ERROR: actions cannot be combined" << std::endl;
+				state = ERROR;
 			}
 			break;
 		case 'v':
@@ -99,10 +104,26 @@ int main(int argc, char *argv[])
 			levelValue = optarg;
 			break;
 		case 'u':
-			state = UI_TEST;
+			std::cerr << "option UI test" << std::endl;
+			// accept the action only when in default state, otherwise fail
+			if (state == DEFAULT) {
+				state = UI_TEST;
+			}
+			else {
+				std::cerr << "ERROR: actions cannot be combined" << std::endl;
+				state = ERROR;
+			}
 			break;
 		case 'r':
-			state = REGIONS_EXPLORER;
+			std::cerr << "option region explorer" << std::endl;
+			// accept the action only when in default state, otherwise fail
+			if (state == DEFAULT) {
+				state = REGION_EXPLORER;
+			}
+			else {
+				std::cerr << "ERROR: actions cannot be combined" << std::endl;
+				state = ERROR;
+			}
 			break;
 		case '?':
 			std::cerr << "unrecognized option" << std::endl;
@@ -112,8 +133,6 @@ int main(int argc, char *argv[])
 						<< "= " << static_cast<char>(c) << " ??" << std::endl;
 			break;
 		}
-
-
 	} while (c != -1);
 
 	if (optind + 1 > argc && state != UI_TEST) {
@@ -127,24 +146,24 @@ int main(int argc, char *argv[])
 
 
 	// if requested - precompute
-	// ***if requested - test (pass on parameters)
-	// by default - show
-
-	if (state == PRECOMPUTE_AND_SHOW || state == PRECOMPUTE_ONLY) {
+	if (state & PRECOMPUTE) {
 		//std::cerr << "running precompute..."  << std::endl;
 		returnValue = VCGL::Startup::runPrecompute(fileName, varName, levelValue, northOnly);
 	}
 
-	if (state == UI_TEST) {
+	// if requested - test (pass on parameters)
+	if (state & UI_TEST) {
 		//pass all arguments
 		returnValue = VCGL::Startup::runUITest(argc-optind, argv+optind);
 	}
 
-	if (state == REGIONS_EXPLORER) {
+	// if requested - open region explorer
+	if (state & REGION_EXPLORER) {
 		returnValue = VCGL::Startup::runRegionExplorer(fileName, varName, levelValue);
 	}
 
-	if (0 == returnValue && (state == PRECOMPUTE_AND_SHOW || state == SHOW_ONLY) ) {
+	// by default, load the main UI
+	if ((state == DEFAULT) && (0 == returnValue)) {
 		//std::cerr << "running show..."  << std::endl;
 		returnValue = VCGL::Startup::runShow(fileName, varName, levelValue, northOnly);
 	}

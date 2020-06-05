@@ -6,7 +6,7 @@
  */
 
 #include "CppUnitLite/TestHarness.h"
-#include "transferfunctionobject.h"
+#include "colorizer/transferfunctionobject.h"
 
 namespace Testing {
 

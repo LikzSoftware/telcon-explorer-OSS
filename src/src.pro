@@ -1,22 +1,23 @@
-TEMPLATE = app
-TARGET = NCCorrelation
-QT += core \
-    gui \
+! include( ../common.pri ) {
+    error( "Couldn't find the common.pri file!" )
+}
+
+TEMPLATE = lib
+TARGET = ../telcon
+CONFIG += staticlib
+
+QT += \
+#    core \
+#    gui \
     opengl
-QMAKE_CXXFLAGS += -std=c++11
-LIBS += -lnetcdf \
-    -lgsl \
-    -lgslcblas \
-    -lm
-MOC_DIR = moc
-OBJECTS_DIR = build
-HEADERS += init/datastorage.h \
-    init/ncfiledatastorage.h \ 
-    init/tcstorage.h \
+
+HEADERS += storage/datastorage.h \
+    storage/ncfiledatastorage.h \ 
+    storage/tcstorage.h \
     exploration/maps/maptype.h \
     exploration/coordinatetext.h \
     preferences/preferencestorage.h \
-    init/cfgfileparser.h \
+    storage/cfgfileparser.h \
     exploration/projection/selectionhull.h \
     exploration/projection/projectionview.h \
     exploration/projection/projectionwidget.h \
@@ -38,8 +39,9 @@ HEADERS += init/datastorage.h \
     process/link.h \
     process/regionconnectivity.h \
     process/regionsearch.h \
-    init/filesystem.h \
-    init/pathresolver.h \
+    storage/filesystem.h \
+    storage/pathresolver.h \
+    storage/precomputeddata.h \
     colorizer/rgb.h \
     colorizer/transferfunctioneditor.h \
     colorizer/transferfunctionstorage.h \
@@ -49,8 +51,7 @@ HEADERS += init/datastorage.h \
     preferences/preferencepane.h \
     process/precompute.h \
     process/progressbar.h \
-    init/read.h \
-    init/startup.h \
+    storage/read.h \
     colorizer/transferfunctionobject.h \
     colorizer/transferfunctioneditorwidget.h \
     colorizer/transferfunctionwidget.h \
@@ -72,12 +73,13 @@ HEADERS += init/datastorage.h \
     multiplatform/QApplication \
     exploration/regions/regionsearchexplorer.h \
     exploration/mouseselectionmode.h
-SOURCES += init/ncfiledatastorage.cpp \ 
-	init/tcstorage.cpp \
+
+SOURCES += storage/ncfiledatastorage.cpp \ 
+	storage/tcstorage.cpp \
     exploration/coordinatetext.cpp \
     exploration/maps/mapgrid.cpp \
     preferences/preferencestorage.cpp \
-    init/cfgfileparser.cpp \
+    storage/cfgfileparser.cpp \
     exploration/projection/selectionhull.cpp \
     exploration/projection/projectionview.cpp \
     exploration/projection/projectionwidget.cpp \
@@ -94,16 +96,16 @@ SOURCES += init/ncfiledatastorage.cpp \
     exploration/maps/mapsubview.cpp \
     process/regionconnectivity.cpp \
     process/regionsearch.cpp \
-    init/filesystem.cpp \
-    init/pathresolver.cpp \
+    storage/filesystem.cpp \
+    storage/pathresolver.cpp \
+    storage/precomputeddata.cpp \
     preferences/preferences.cpp \
     colorizer/transferfunctioneditor.cpp \
     colorizer/transferfunctionstorage.cpp \
     preferences/preferencepanelogic.cpp \
     preferences/preferencepane.cpp \
     process/precompute.cpp \
-    init/read.cpp \
-    init/startup.cpp \
+    storage/read.cpp \
     colorizer/transferfunctionobject.cpp \
     colorizer/transferfunctioneditorwidget.cpp \
     colorizer/transferfunctionwidget.cpp \
@@ -111,42 +113,9 @@ SOURCES += init/ncfiledatastorage.cpp \
     projection/distancematrix.cpp \
     projection/sammon.cpp \
     projection/tspoint.cpp \
-    main.cpp \
     exploration/regions/regionsearchexplorer.cpp
+
 FORMS += exploration/explorationwidget.ui \
     preferences/preferencepane.ui \
     colorizer/transferfunctionwidget.ui \
     exploration/regions/regionsearchexplorer.ui
-RESOURCES += 
-Config.Tests { 
-    TARGET = NCCTests
-    INCLUDEPATH += ..
-    SOURCES -= main.cpp \
-        init/startup.cpp
-    HEADERS += cppunitextras.h \
-        preferences/fakepreferencepaneview.h
-    SOURCES += exploration/maps/mapsubviewtest.cpp \ 
-    	init/nhtests.cpp \
-        exploration/maps/layouttest.cpp \
-        cppunitextras.cpp \
-        process/regionconnectivitytest.cpp \
-        process/regionsearchtest.cpp \
-        init/pathresolvertest.cpp \
-        colorizer/transferfunctioneditortest.cpp \
-        preferences/preferencepanelogictest.cpp \
-        colorizer/transferfunctionobjecttest.cpp \
-        tests-main.cpp
-    LIBS += -L../CppUnitLite \
-        -lCppUnitLite
-}
-
-mac {
-    EXTRAS_PATH = $$(HOME)/Developer/local
-    INCLUDEPATH += $$EXTRAS_PATH/include \
-            /usr/local/include
-    LIBS += -L$$EXTRAS_PATH/lib \
-            -L/usr/local/lib
-    QMAKE_CXXFLAGS += -stdlib=libc++
-    QMAKE_LFLAGS += -stdlib=libc++
-    CONFIG -= app_bundle
-}

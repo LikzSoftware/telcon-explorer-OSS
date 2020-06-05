@@ -7,10 +7,10 @@
 
 #include "explorationmodelimpl.h"
 
-#include "init/ncfiledatastorage.h"
-#include "init/tcstorage.h"
-#include "init/read.h"
-#include "process/precompute.h"
+#include "storage/ncfiledatastorage.h"
+#include "storage/tcstorage.h"
+#include "storage/precomputeddata.h"
+#include "storage/read.h"
 
 #include <string>
 #include <iostream>
@@ -20,7 +20,6 @@
 #include "projection/projectedpointinfo.h"
 #include "projection/tspoint.h"
 
-#include "process/precompute.h"
 #include "process/regionsearch.h"
 
 #include <gsl/gsl_cdf.h>

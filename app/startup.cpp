@@ -6,14 +6,15 @@
 
 #include "startup.h"
 
-#include "init/read.h"
-#include "ncfiledatastorage.h"
-#include "tcstorage.h"
+#include "storage/read.h"
+#include "storage/ncfiledatastorage.h"
+#include "storage/tcstorage.h"
 
-#include "init/pathresolver.h"
-#include "init/filesystem.h"
+#include "storage/pathresolver.h"
+#include "storage/filesystem.h"
 
 #include "process/precompute.h"
+#include "storage/precomputeddata.h"
 
 #include <sstream>
 
@@ -240,6 +241,8 @@ int Startup::runShow(char* fileName, char* variableName, char* levelValue, bool 
 		ew.move(200,200);
 		ew.setModel(pem);
 		ew.show();
+		ew.resize(ew.width()+1, ew.height()+1);
+		ew.resize(ew.width()-1, ew.height()-1);
 
 		retVal = a.exec();
 	}
@@ -255,14 +258,20 @@ int Startup::runRegionExplorer(char* fileName, char* variableName, char* levelVa
 	char* argvFake[] = {};
 	QApplication a(argcFake, argvFake);
 
-	std::string strFN(fileName);
-	std::string strVar(variableName);
+	std::string strFN;
+	std::string strVar;
 	std::string strLVL;
 	std::string fnCorrelation;
 	std::string fnAutocorr;
 	std::string fnProjection;
-
 	int lvlValue = -1;
+
+	if (fileName != 0) {
+		strFN = fileName;
+	}
+	if (variableName != 0) {
+		strVar = variableName;
+	}
 	if (levelValue != 0) {
 		strLVL = levelValue;
 		sscanf(levelValue, "%d", &lvlValue);
@@ -329,10 +338,13 @@ int Startup::runUITest( int argCount, char** argValues ) {
 
 	int retVal = 0;
 
-	if (!argCount) {
-		int argcFake = 0;
-		char* argvFake[] = {};
-		QApplication a(argcFake, argvFake);
+	if (argCount) {
+		std::cerr << "ignoring all test arguments" << std::endl;
+		argCount = 0;
+	}
+
+	{
+		QApplication a(argCount, argValues);
 
 		std::vector< std::vector<QPointF> > contours;
 		FileSystem fs;
@@ -353,6 +365,8 @@ int Startup::runUITest( int argCount, char** argValues ) {
 		//ML.resize(400,200);
 		ew.setModel(pem);
 		ew.show();
+		ew.resize(ew.width()+1, ew.height()+1);
+		ew.resize(ew.width()-1, ew.height()-1);
 
 		retVal = a.exec();
 	}

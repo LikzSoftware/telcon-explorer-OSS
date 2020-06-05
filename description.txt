@@ -13,7 +13,7 @@ TABLE OF CONTENTS
 
 I. COMPILATION
 
-The tool has been developed and tested under Ubuntu Linux.
+The tool has been developed and tested under Ubuntu Linux and macOS.
 
 Required libraries (Ubuntu package names):
 NetCDF (libnetcdf-dev)
@@ -21,14 +21,14 @@ GSL, GNU Scientific Library (libgsl0-dev)
 Qt 4.8 (libqt4-dev libqt4-core libqt4-gui libqt4-opengl)
 
 Compilation:
-/usr/bin/qmake CONFIG+=debug NCCorrelation.pro
+/usr/bin/qmake CONFIG+=debug telcon-explorer.pro
 make
 
 
 II. LAUNCHING THE TOOL
 
-./NCCorrelation [ -P | --precomputeOnly ] -v <variable name> -l <level> fileName.nc
-or ./NCCorrelation [ --precompute ] --var <variable name> --level <level> fileName.nc
+./telcon-explorer [ -P | --precomputeOnly ] -v <variable name> -l <level> fileName.nc
+or ./telcon-explorer [ --precompute ] --var <variable name> --level <level> fileName.nc
 
 -P --precompute --precomputeOnly Perform the necessary precomputations (required for a new dataset).
 
@@ -37,10 +37,10 @@ or ./NCCorrelation [ --precompute ] --var <variable name> --level <level> fileNa
 -l --level Specify the pressure level 
 
 Examples: 
-	./NCCorrelation -P -v geopoth -l 50000 echam-yearmean.nc
+	./telcon-explorer -P -v geopoth -l 50000 echam-yearmean.nc
 		will first precompute and then open the exploration window for the dataset
 		
-	./NCCorrelation -v hgt -l 500 ncep-wintermean.nc
+	./telcon-explorer -v hgt -l 500 ncep-wintermean.nc
 		will open the exploration window, relying on the files with precomputation results	
 
 

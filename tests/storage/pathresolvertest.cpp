@@ -6,8 +6,8 @@
  */
 
 
-#include "pathresolver.h"
-#include "filesystem.h"
+#include "storage/pathresolver.h"
+#include "storage/filesystem.h"
 
 #include "CppUnitLite/TestHarness.h"
 #include <vector>
@@ -45,6 +45,21 @@ public:
 SimpleString StringFrom (const std::string& value)
 {
 	return SimpleString(value.c_str());
+}
+
+TEST(findFileAbsolutePath, PathResolver) {
+	FakeFileSystem ffs;
+	ffs.cwd = "/home";
+	ffs.files.push_back("/home");
+	ffs.files.push_back("/data");
+	ffs.files.push_back("/data/data-file.txt");
+
+	VCGL::PathResolver pr(ffs);
+	std::string path;
+	bool found = pr.find("/data/data-file.txt", path);
+
+	CHECK(found);
+	CHECK_EQUAL(("/data/data-file.txt"), path);
 }
 
 TEST(findFileCWDRoot, PathResolver) {
@@ -85,22 +100,51 @@ TEST(findFileHomeDir, PathResolver) {
 }
 
 
-TEST(findFileMetaDir, PathResolver) {
+TEST(findFileGlobalDataDir, PathResolver) {
 	FakeFileSystem ffs;
 	ffs.cwd = "/cwd";
 	ffs.home = "/home/user";
 	ffs.files.push_back("/app");
-	ffs.files.push_back("/app/meta");
-	ffs.files.push_back("/app/meta/fileD.txt");
+
+	std::string globalDataDir;
+#ifdef DATADIR
+	globalDataDir = DATADIR;
+#else
+	globalDataDir = "/app/meta";
+#endif
+	ffs.files.push_back(globalDataDir);
+	ffs.files.push_back(globalDataDir+"/fileD.txt");
 
 	VCGL::PathResolver pr(ffs);
 	pr.setAppDir("/app");
 
 	std::string path;
 	bool found = pr.find("fileD.txt", path);
+	CHECK_EQUAL((globalDataDir+"/fileD.txt"), path);
 	CHECK(found);
-	CHECK_EQUAL(("/app/meta/fileD.txt"),path);
 }
+
+#ifdef DATADIR
+TEST(findFileGlobalDataDirNotInstalled, PathResolver) {
+	FakeFileSystem ffs;
+	ffs.cwd = "/cwd";
+	ffs.home = "/home/user";
+	ffs.files.push_back("/appbin");
+	ffs.files.push_back("/appbin/meta");
+	ffs.files.push_back("/appbin/meta/fileD.txt");
+
+	std::string globalDataDir;
+	globalDataDir = DATADIR;
+
+	VCGL::PathResolver pr(ffs);
+	pr.setAppDir("/appbin");
+
+	std::string path;
+	bool found = pr.find("fileD.txt", path);
+	CHECK_EQUAL(("/appbin/meta/fileD.txt"), path);
+	CHECK(found);
+}
+#endif
 
 TEST(findDependentFileSubdir, PathResolver) {
 	FakeFileSystem ffs;

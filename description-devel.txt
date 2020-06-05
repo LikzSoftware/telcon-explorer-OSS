@@ -30,4 +30,4 @@ projection - classes responsible for the computation of the projection; *this pa
 
 
 CLASS STRUCTURE
-The main entities and their relationships are in the file [NCCorrelation].dia in the root package.
+The main entities and their relationships are in the file [telcon-explorer].dia in the root package.
